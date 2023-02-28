@@ -1,0 +1,13 @@
+[user]
+	name = Jongsun Suh
+	email = 34228073+MajorLift@users.noreply.github.com
+	signingkey = 6EBEAAA2841E4036814A8C9006207DE49641BC5E
+[credential "github.com"]
+	useHttpPath = true
+[commit]
+	gpgsign = true
+[credential]
+	helper = 
+	helper = /usr/local/share/gcm-core/git-credential-manager
+[credential "https://dev.azure.com"]
+	useHttpPath = true
