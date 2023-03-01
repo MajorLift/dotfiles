@@ -3,7 +3,6 @@ FabioAntunes/fish-nvm
 edc/bass
 jorgebucaran/fisher
 reitzig/sdkman-for-fish@v1.4.0
-jethrokuan/z
 ilancosman/tide@v5
 jorgebucaran/autopair.fish
 laughedelic/pisces
@@ -13,3 +12,4 @@ h-matsuo/fish-color-scheme-switcher
 paysonwallach/fish-you-should-use
 halostatue/fish-docker@v1.x
 yo-goto/ggl.fish
+jethrokuan/z
