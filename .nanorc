@@ -1,1 +1,1 @@
-include /Users/jongsun/.nano/*.nanorc
+include $HOME/.nano/*.nanorc
