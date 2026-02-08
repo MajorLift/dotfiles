@@ -1,0 +1,13 @@
+[user]
+	name = <NAME>
+	email = <EMAIL>
+	signingkey = <GPG_SIGNING_KEY>
+[credential "github.com"]
+	useHttpPath = true
+[commit]
+	gpgsign = true
+[credential]
+	helper = 
+	helper = /usr/local/share/gcm-core/git-credential-manager
+[credential "https://dev.azure.com"]
+	useHttpPath = true

@@ -1,0 +1,3 @@
+function gbr --wraps=git\ branch\ --format=\'\%\(HEAD\)\ \%\(color:yellow\)\%\(refname:short\)\%\(color:reset\)\ -\ \%\(contents:subject\)\ \%\(color:green\)\(\%\(committerdate:relative\)\)\ \[\%\(authorname\)\]\'\ --sort=-committerdate --description alias\ gbr=git\ branch\ --format=\'\%\(HEAD\)\ \%\(color:yellow\)\%\(refname:short\)\%\(color:reset\)\ -\ \%\(contents:subject\)\ \%\(color:green\)\(\%\(committerdate:relative\)\)\ \[\%\(authorname\)\]\'\ --sort=-committerdate
+  git branch --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(contents:subject) %(color:green)(%(committerdate:relative)) [%(authorname)]' --sort=-committerdate $argv; 
+end
