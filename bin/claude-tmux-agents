@@ -1,0 +1,75 @@
+#!/bin/bash
+# claude-tmux-agents — Launch parallel Claude Code agents in tmux panes
+#
+# Usage:
+#   claude-tmux-agents                          # Interactive mode (3 panes, you type prompts)
+#   claude-tmux-agents --headless <project>     # Headless mode (parallel analysis tasks)
+#
+# Examples:
+#   claude-tmux-agents                          # 3 interactive Claude sessions
+#   claude-tmux-agents --headless ~/Code/my-project
+
+set -euo pipefail
+
+SESSION="claude-agents"
+MODE="${1:-interactive}"
+PROJECT="${2:-$(pwd)}"
+
+# Kill existing session if present
+tmux kill-session -t "$SESSION" 2>/dev/null || true
+
+if [[ "$MODE" == "--headless" ]]; then
+  # ─── Headless mode: parallel automated tasks ───
+  echo "Launching headless agents on: $PROJECT"
+
+  OUTDIR="$PROJECT/.claude-agent-output"
+  mkdir -p "$OUTDIR"
+
+  tmux new-session -d -s "$SESSION" -x 200 -y 50
+
+  # Pane 0: Architecture overview
+  tmux send-keys -t "$SESSION" \
+    "cd '$PROJECT' && claude -p 'Give a high-level architecture overview of this project. Identify the main modules, their responsibilities, and how they relate to each other. Be concise.' --allowedTools 'Read Grep Glob' --max-turns 20 2>&1 | tee '$OUTDIR/architecture.txt'" Enter
+
+  # Pane 1: Code quality audit
+  tmux split-window -t "$SESSION" -h
+  tmux send-keys -t "$SESSION" \
+    "cd '$PROJECT' && claude -p 'Audit this codebase for code quality issues: inconsistent patterns, missing error handling, dead code, potential bugs. Focus on actionable findings, not style nits. Be concise.' --allowedTools 'Read Grep Glob' --max-turns 20 2>&1 | tee '$OUTDIR/quality-audit.txt'" Enter
+
+  # Pane 2: Test coverage analysis
+  tmux split-window -t "$SESSION" -v
+  tmux send-keys -t "$SESSION" \
+    "cd '$PROJECT' && claude -p 'Analyze the test coverage of this project. Which modules have tests? Which are missing? What kinds of tests exist (unit, integration, stress)? Suggest the highest-value tests to add. Be concise.' --allowedTools 'Read Grep Glob' --max-turns 20 2>&1 | tee '$OUTDIR/test-coverage.txt'" Enter
+
+  # Layout: even arrangement
+  tmux select-layout -t "$SESSION" main-horizontal
+
+  echo "Agents running in tmux session '$SESSION'"
+  echo "Output files: $OUTDIR/"
+  echo "Attach with: tmux attach -t $SESSION"
+  tmux attach-session -t "$SESSION"
+
+elif [[ "$MODE" == "interactive" || "$MODE" == "--interactive" ]]; then
+  # ─── Interactive mode: 3 Claude sessions in panes ───
+  echo "Launching 3 interactive Claude sessions..."
+
+  tmux new-session -d -s "$SESSION" -x 200 -y 50
+
+  # Pane 0
+  tmux send-keys -t "$SESSION" "cd '$PROJECT' && claude" Enter
+
+  # Pane 1
+  tmux split-window -t "$SESSION" -h
+  tmux send-keys -t "$SESSION" "cd '$PROJECT' && claude" Enter
+
+  # Pane 2
+  tmux split-window -t "$SESSION" -v
+  tmux send-keys -t "$SESSION" "cd '$PROJECT' && claude" Enter
+
+  tmux select-layout -t "$SESSION" main-horizontal
+  tmux attach-session -t "$SESSION"
+
+else
+  echo "Usage: $(basename "$0") [--interactive | --headless <project-path>]"
+  exit 1
+fi
